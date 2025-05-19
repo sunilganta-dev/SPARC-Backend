@@ -3,7 +3,7 @@ import os
 class Config:
     """Base configuration."""
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev_secret_key_change_in_production')
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'postgresql://localhost/shidduch')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'postgresql://postgres:buzzBuzz1753@34.28.173.49/SPARC')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'admin@example.com')
 
@@ -15,7 +15,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     """Testing configuration."""
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URL', 'postgresql://localhost/shidduch_test')
+    SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URL', 'postgresql://postgres:buzzBuzz1753@34.28.173.49/SPARC_test')
     DEBUG = True
 
 class ProductionConfig(Config):
