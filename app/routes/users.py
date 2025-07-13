@@ -187,6 +187,8 @@ def get_matchmaker_users(current_user):
             'age': calculate_age(user.dob),
             'current_location': user.current_location
         })
+
+    # print(user_list)
     
     return jsonify({
         'users': user_list,

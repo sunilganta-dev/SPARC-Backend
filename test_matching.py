@@ -121,6 +121,96 @@ def test_all_top_matches():
     print(tabulate(table_data, headers=headers, tablefmt="grid"))
     print(f"\nFound {len(matches)} matches with score >= 70")
 
+def show_top_10_matches():
+    """Show the absolute top 10 matches in the entire database with detailed breakdown"""
+    print("\n" + "="*80)
+    print("🏆 TOP 10 HIGHEST COMPATIBILITY MATCHES IN DATABASE 🏆")
+    print("="*80)
+    
+    # Get all top matches (no minimum score, get more results)
+    matches = get_all_top_matches(limit_per_match=10, min_score=0)
+    
+    if not matches:
+        print("No matches found in database.")
+        return
+    
+    # Get top 10 matches
+    top_matches = matches[:10]
+    
+    # Prepare detailed data for display
+    table_data = []
+    for i, match in enumerate(top_matches, 1):
+        user_a = User.query.get(match["user_a_id"])
+        user_b = User.query.get(match["user_b_id"])
+        
+        # Get additional details
+        age_a = calculate_age(user_a.dob) if user_a.dob else "Unknown"
+        age_b = calculate_age(user_b.dob) if user_b.dob else "Unknown"
+        
+        # Get religious compatibility if available
+        religious_score = "N/A"
+        family_score = "N/A"
+        
+        compatibility = match.get("compatibility", {})
+        if "religious_compatibility" in compatibility:
+            religious_score = f"{compatibility['religious_compatibility'].get('score', 'N/A')}%"
+        if "family_compatibility" in compatibility:
+            family_score = f"{compatibility['family_compatibility'].get('score', 'N/A')}%"
+        
+        table_data.append([
+            f"#{i}",
+            f"{match['user_a_name']} ({user_a.gender}, {age_a})",
+            f"{match['user_b_name']} ({user_b.gender}, {age_b})",
+            f"{match['score']}%",
+            religious_score,
+            family_score,
+            user_a.current_location[:20] if user_a.current_location else "N/A"
+        ])
+    
+    # Display matches
+    headers = ["Rank", "Person A", "Person B", "Overall", "Religious", "Family", "Location"]
+    print(tabulate(table_data, headers=headers, tablefmt="fancy_grid", maxcolwidths=[5, 25, 25, 8, 10, 10, 20]))
+    
+    # Show detailed breakdown for top 3 matches
+    print("\n" + "="*80)
+    print("🔍 DETAILED BREAKDOWN OF TOP 3 MATCHES")
+    print("="*80)
+    
+    for i, match in enumerate(top_matches[:3], 1):
+        user_a = User.query.get(match["user_a_id"])
+        user_b = User.query.get(match["user_b_id"])
+        
+        print(f"\n#{i} MATCH: {user_a.name} ↔ {user_b.name} ({match['score']}% compatibility)")
+        print("-" * 50)
+        
+        # Basic info
+        print(f"👤 {user_a.name}: {user_a.gender}, Age {calculate_age(user_a.dob)}, {user_a.current_location}")
+        print(f"👤 {user_b.name}: {user_b.gender}, Age {calculate_age(user_b.dob)}, {user_b.current_location}")
+        
+        # Compatibility breakdown
+        compatibility = match.get("compatibility", {})
+        if compatibility:
+            print("\n📊 Compatibility Breakdown:")
+            for category, details in compatibility.items():
+                score = details.get("score", "N/A")
+                print(f"   • {category.replace('_', ' ').title()}: {score}%")
+                
+                # Show specific details if available
+                if "details" in details:
+                    for key, value in details["details"].items():
+                        print(f"     - {key.title()}: {value}")
+        
+        # Religious profiles if available
+        if hasattr(user_a, 'religious_profile') and hasattr(user_b, 'religious_profile'):
+            rel_a = user_a.religious_profile
+            rel_b = user_b.religious_profile
+            if rel_a and rel_b:
+                print(f"\n🕯️  Religious Observance:")
+                print(f"   • Shabbat: {rel_a.shabbat_observance} | {rel_b.shabbat_observance}")
+                print(f"   • Kosher: {rel_a.kosher_observance} | {rel_b.kosher_observance}")
+        
+        print()
+
 def test_matchmaker_matches():
     """Test finding matches for a matchmaker's applicants"""
     matchmakers = find_test_matchmakers()
@@ -168,16 +258,19 @@ def main():
     with app.app_context():
         print("Starting matching tests...")
         
-        # Test 1: Match for a specific user
+        # Test 1: Show top 10 matches in database
+        show_top_10_matches()
+        
+        # Test 2: Match for a specific user
         test_match_specific_user()
         
-        # Test 2: Find top matches across all users
+        # Test 3: Find top matches across all users
         test_all_top_matches()
         
-        # Test 3: Find matches for a matchmaker's applicants
+        # Test 4: Find matches for a matchmaker's applicants
         test_matchmaker_matches()
         
         print("\nMatching tests complete!")
 
 if __name__ == "__main__":
-    main() 
+    main()

@@ -53,24 +53,50 @@ The API will be available at http://localhost:5000
 
 ## API Endpoints
 
+All endpoints except for login/register require JWT authentication via the Authorization header.
+
 ### Authentication
 
 - `POST /api/auth/register` - Register a new matchmaker
+  - Requires: name, email, password
+  - Returns: matchmaker_id
+  
 - `POST /api/auth/login` - Login as a matchmaker and receive JWT token
+  - Requires: email, password
+  - Returns: token, matchmaker details
+  
 - `POST /api/auth/reset-password` - Request password reset
+  - Requires: email
+  - Returns: reset token (demo only)
 
 ### Users
 
 - `POST /api/user` - Create a new user profile
+  - Requires: detailed user profile data including personal, religious, background and lifestyle information
+  - Returns: user_id
+  
 - `GET /api/user/<user_id>` - Get a specific user's profile
+  - Returns: Complete user profile with personal, religious, background and lifestyle data
+  
 - `GET /api/matchmaker/users` - Get all users belonging to the authenticated matchmaker
+  - Returns: List of users with basic information (id, name, email, gender, age, location)
 
 ### Matches
 
 - `GET /api/user/<user_id>/matches` - Get matches for a specific user
+  - Optional query param: limit (default: 10)
+  - Returns: List of matches for the user with compatibility scores
+  
 - `GET /api/matches/all` - Get all top matches across the system (admin only)
+  - Optional query params: limit_per_match (default: 5), min_score (default: 50)
+  - Returns: List of all top matches across users
+  
 - `GET /api/matchmaker/matches` - Get matches for all applicants of the authenticated matchmaker
+  - Optional query param: limit (default: 100)
+  - Returns: List of matches for all applicants assigned to the matchmaker
+  
 - `GET /api/matches/compatibility/<user_a_id>/<user_b_id>` - Get detailed compatibility between two users
+  - Returns: Compatibility score and detailed breakdown of compatibility factors
 
 ## Matching Algorithm
 

@@ -77,7 +77,7 @@ def get_matches_for_matchmaker(current_user):
     """Get matches for all applicants of a matchmaker"""
     limit = request.args.get('limit', 100, type=int)
     matches = get_matchmaker_matches(current_user.id, limit=limit)
-    
+    print(matches)
     return jsonify({
         'matches': matches,
         'count': len(matches)
