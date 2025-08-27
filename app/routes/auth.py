@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from app.models.matchmaker import Matchmaker
+from app.models.matchmaker import Matchmaker, Applicant
+from app.models.user import User
 from app import db, app
 import jwt
 from datetime import datetime, timedelta

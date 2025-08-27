@@ -20,7 +20,9 @@ from app.models import user, religion, background, lifestyle, matchmaker
 from app.routes.users import users_bp
 from app.routes.matches import matches_bp
 from app.routes.auth import auth_bp
+from app.routes.matchmaker import matchmaker_bp
 
 app.register_blueprint(users_bp, url_prefix='/api')
 app.register_blueprint(matches_bp, url_prefix='/api')
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
+app.register_blueprint(matchmaker_bp, url_prefix='/api/matchmaker')
