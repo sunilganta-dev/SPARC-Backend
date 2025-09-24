@@ -7,7 +7,7 @@ from app.models.matchmaker import Matchmaker, Applicant
 from app import db
 from functools import wraps
 import jwt
-from app import app
+#from app import app
 from datetime import datetime
 
 users_bp = Blueprint('users', __name__)

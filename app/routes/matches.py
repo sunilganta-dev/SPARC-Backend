@@ -8,7 +8,7 @@ from app.services.match_engine import (
 )
 from functools import wraps
 import jwt
-from app import app
+#from app import app
 
 matches_bp = Blueprint('matches', __name__)
 

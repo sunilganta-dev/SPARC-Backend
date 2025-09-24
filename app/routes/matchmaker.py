@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.models.matchmaker import Matchmaker, Applicant
 from app.models.user import User
-from app import db, app
+from app import db
 from datetime import datetime
 
 matchmaker_bp = Blueprint('matchmaker', __name__)

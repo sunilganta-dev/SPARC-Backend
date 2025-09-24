@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.models.matchmaker import Matchmaker, Applicant
 from app.models.user import User
-from app import db, app
+from app import db
 import jwt
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
