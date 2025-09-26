@@ -23,10 +23,13 @@ def apply_without_login(matchmaker_id):
     data = request.form.to_dict()
     file = request.files.get("picture")
 
-    # Ensure matchmaker exists
-    matchmaker = Matchmaker.query.get(matchmaker_id)
-    if not matchmaker:
-        return jsonify({"error": "Matchmaker not found"}), 404
+    # Handle General Submission (id=0) OR validate matchmaker
+    if matchmaker_id == 0:
+        matchmaker = None
+    else:
+        matchmaker = Matchmaker.query.get(matchmaker_id)
+        if not matchmaker:
+            return jsonify({"error": "Matchmaker not found"}), 404
 
     # Save picture if provided
     picture_url = None
@@ -40,7 +43,7 @@ def apply_without_login(matchmaker_id):
     try:
         # Create applicant
         applicant = Applicant(
-            shidduch_lady_id=matchmaker_id,
+            shidduch_lady_id=matchmaker.id if matchmaker else None,  # ✅ allow None for General Submission
             first_name=data.get("first_name"),
             last_name=data.get("last_name"),
             email=data.get("email"),
